@@ -1,6 +1,8 @@
 import datetime
+import configparser
+import os
 
-def calculate_area():
+def calculate_area(round_values):
     total_area = 0
     room_areas = []  # Список для хранения площадей помещений
 
@@ -18,6 +20,9 @@ def calculate_area():
     door_area = num_doors  # Площадь одной двери равна 1 метру
     room_area -= door_area
 
+    if round_values:
+        room_area = round(room_area, 2)
+
     total_area += room_area
     room_areas.append(room_area)
 
@@ -28,21 +33,21 @@ def create_file(total_area, room_areas):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     file_name = f"upd({current_time}).txt"
 
-    # Создание и запись в файл
+    # Запись в файл в нужном порядке
     with open(file_name, "a") as file:
-        file.write(f"Общая площадь: {total_area}\n")
+        file.write(f"№(номер помещения) S(площадь помещения)\n")
         for i, room_area in enumerate(room_areas, 1):
-            file.write(f"Помещение {i}: {room_area}\n")
+            file.write(f"{i} {room_area}\n")
 
     print(f"Файл {file_name} создан.")
 
-def run_calculation():
+def run_calculation(round_values):
     total_area = 0
     room_areas = []
 
     while True:
         # Подсчет площади
-        new_total_area, new_room_areas = calculate_area()
+        new_total_area, new_room_areas = calculate_area(round_values)
 
         # Добавление результатов к общей площади и списку площадей помещений
         total_area += new_total_area
@@ -65,28 +70,25 @@ def run_calculation():
 
     print("Программа завершена.")
 
-# Запрос варианта запуска у пользователя
-option = int(input("Выберите вариант запуска (0 - ввод данных в консоль, 1 - чтение данных из файла, 2 - автоматический): "))
+def read_configuration():
+    config = configparser.ConfigParser()
+    if os.path.exists("conf.ini"):
+        config.read("conf.ini")
+        round_values = config.getboolean("Settings", "RoundValues")
+    else:
+        round_values = ask_rounding_preference()
+        config["Settings"] = {"RoundValues": str(round_values)}
+        with open("conf.ini", "w") as config_file:
+            config.write(config_file)
+    return round_values
 
-if option == 0 or option == 1:
-    # Не создавать экземпляр AutoCAD
-    run_calculation()
+def ask_rounding_preference():
+    rounding_preference = input("Хотите округлять значения до сотых? (y/n): ")
+    if rounding_preference.lower() == "y":
+        return True
+    else:
+        return False
 
-elif option == 2:
-    try:
-        import win32com.client
-
-        # Попытка получить существующий экземпляр AutoCAD
-        acad = win32com.client.GetActiveObject("AutoCAD.Application")
-        # Получение активного документа
-        doc = acad.ActiveDocument
-        # Получение модели пространства модели
-        msp = doc.ModelSpace
-
-        # Запуск расчета
-        run_calculation()
-
-    except:
-        print("Ошибка: Не удалось получить доступ к AutoCAD.")
-else:
-    print("Неверный вариант запуска.")
+# Не создавать экземпляр AutoCAD
+round_values = read_configuration()
+run_calculation(round_values)
