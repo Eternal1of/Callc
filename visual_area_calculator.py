@@ -1,5 +1,7 @@
 import customtkinter as tk
 
+# TODO: @flaymerr пидорасина?
+
 def calculate_area(round_values):
     total_area = 0
     room_areas = []
@@ -37,46 +39,49 @@ def calculate_area(round_values):
 
     root = tk.CTk()
     root.title("Калькулятор площади помещений")
-    root.geometry("400x300")
+    root.geometry("1100x580")
+
+    # Применение темной темы
+    root.set_theme("dark")
 
     # Создание и размещение виджетов
-    room_number_label = tk.CTkLabel(root, text="Номер помещения:")
+    room_number_label = tk.CTkLabel(root, text="Номер помещения:", font=("Arial", 14))
     room_number_label.pack()
 
-    room_number_entry = tk.CTkEntry(root)
+    room_number_entry = tk.CTkEntry(root, font=("Arial", 14))
     room_number_entry.pack()
 
-    room_length_label = tk.CTkLabel(root, text="Длина помещения:")
+    room_length_label = tk.CTkLabel(root, text="Длина помещения:", font=("Arial", 14))
     room_length_label.pack()
 
-    room_length_entry = tk.CTkEntry(root)
+    room_length_entry = tk.CTkEntry(root, font=("Arial", 14))
     room_length_entry.pack()
 
-    room_length_minus_label = tk.CTkLabel(root, text="Значение длины для вычета:")
+    room_length_minus_label = tk.CTkLabel(root, text="Значение длины для вычета:", font=("Arial", 14))
     room_length_minus_label.pack()
 
-    room_length_minus_entry = tk.CTkEntry(root)
+    room_length_minus_entry = tk.CTkEntry(root, font=("Arial", 14))
     room_length_minus_entry.pack()
 
-    room_height_label = tk.CTkLabel(root, text="Высота помещения:")
+    room_height_label = tk.CTkLabel(root, text="Высота помещения:", font=("Arial", 14))
     room_height_label.pack()
 
-    room_height_entry = tk.CTkEntry(root)
+    room_height_entry = tk.CTkEntry(root, font=("Arial", 14))
     room_height_entry.pack()
 
-    num_doors_label = tk.CTkLabel(root, text="Количество дверей:")
+    num_doors_label = tk.CTkLabel(root, text="Количество дверей:", font=("Arial", 14))
     num_doors_label.pack()
 
-    num_doors_entry = tk.CTkEntry(root)
+    num_doors_entry = tk.CTkEntry(root, font=("Arial", 14))
     num_doors_entry.pack()
 
-    calculate_button = tk.CTkButton(root, text="Рассчитать", command=calculate_button_click)
+    calculate_button = tk.CTkButton(root, text="Рассчитать", font=("Arial", 14), command=calculate_button_click)
     calculate_button.pack()
 
-    reset_button = tk.CTkButton(root, text="Сбросить", command=reset_button_click)
+    reset_button = tk.CTkButton(root, text="Сбросить", font=("Arial", 14), command=reset_button_click)
     reset_button.pack()
 
-    total_area_label = tk.CTkLabel(root, text="Общая площадь:")
+    total_area_label = tk.CTkLabel(root, text="Общая площадь:", font=("Arial", 16, "bold"))
     total_area_label.pack()
 
     root.mainloop()
