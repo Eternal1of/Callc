@@ -31,7 +31,7 @@ elif option == 2:
 else:
     print("Неверный вариант запуска.")
     exit()
-
+# TODO@flaymerr
 def calculate_area():
     total_area = 0
     room_areas = []  # Список для хранения площадей помещений
