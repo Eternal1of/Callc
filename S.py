@@ -1,34 +1,29 @@
-import datetime
 import configparser
 import os
 
 def calculate_area(round_values):
     total_area = 0
-    room_areas = []  # Список для хранения площадей помещений
+    room_areas = []
 
-    while True:
-        # Запрос у пользователя ввода данных
-        room_number = input("Введите номер помещения (номер комнаты): ")
-        if room_number.lower() == "end":
-            break
+    # Запрос у пользователя ввода данных
+    room_number = input("Введите номер помещения (номер комнаты): ")
+    room_length = float(input("Введите длину помещения: "))
+    room_length_minus = float(input("Введите значение длины, которое нужно отнять от длины стены: "))
+    room_height = float(input("Введите высоту помещения: "))
+    num_doors = int(input("Введите количество дверей в помещении: "))
 
-        room_length = float(input("Введите длину помещения: "))
-        room_length_minus = float(input("Введите значение длины, которое нужно отнять от длины стены: "))
-        room_height = float(input("Введите высоту помещения: "))
-        num_doors = int(input("Введите количество дверей в помещении: "))
+    # Вычисление площади помещения
+    room_area = (room_length - room_length_minus) * room_height
 
-        # Вычисление площади помещения
-        room_area = (room_length - room_length_minus) * room_height
+    # Вычитание площади дверей
+    door_area = num_doors  # Площадь одной двери равна 1 метру
+    room_area -= door_area
 
-        # Вычитание площади дверей
-        door_area = num_doors  # Площадь одной двери равна 1 метру
-        room_area -= door_area
+    if round_values:
+        room_area = round(room_area, 2)
 
-        if round_values:
-            room_area = round(room_area, 2)
-
-        total_area += room_area
-        room_areas.append(room_area)
+    total_area += room_area
+    room_areas.append(room_area)
 
     return total_area, room_areas
 
@@ -75,14 +70,6 @@ def run_calculation(round_values):
     if save_result_input.lower() == "y":
         save_result(total_area, room_areas)
 
-    # Запрос сохранения настроек
-    save_settings_input = input("Сохранить настройки в файле conf.ini? (y/n): ")
-
-    if save_settings_input.lower() == "y":
-        save_settings(round_values)
-    else:
-        delete_configuration()
-
     print("Программа завершена.")
 
 def read_configuration():
@@ -122,6 +109,13 @@ def delete_configuration():
         print("Файл conf.ini удален.")
     else:
         print("Файл conf.ini не существует.")
+
+round_values = read_configuration()
+run_calculation(round_values)
+
+# Запрос сохранения настроек
+save_settings_input = input("Сохранить настройки в файле conf.ini? (y/n): ")
+
 def save_settings(round_values):
     config = configparser.ConfigParser()
     config["Settings"] = {"RoundValues": str(round_values)}
@@ -129,6 +123,7 @@ def save_settings(round_values):
         config.write(config_file)
     print("Настройки сохранены.")
 
-
-round_values = read_configuration()
-run_calculation(round_values)
+if save_settings_input.lower() == "y":
+    save_settings(round_values)
+else:
+    delete_configuration()
