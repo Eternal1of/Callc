@@ -9,7 +9,7 @@ import webbrowser
 __version__ = "0.0.5"
 
 REPO_URL = "https://github.com/Eternal1of/Callc"
-RELEASES_URL = "https://api.github.com/repos/Eternal1of/Callc/releases"
+RELEASES_URL = "https://api.github.com/repos/Eternal1of/Callc/releases/latest"
 
 # Глобальная переменная для отслеживания количества открытых окон
 open_windows_count = 0
