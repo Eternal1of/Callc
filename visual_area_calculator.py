@@ -1,5 +1,36 @@
 import customtkinter as tk
 from tkinter import messagebox
+import git
+import os
+import requests
+import webbrowser
+
+__version__ = "0.0.1"
+
+REPO_URL = "https://github.com/Eternal1of/Callc"
+RELEASES_URL = "https://api.github.com/repos/Eternal1of/Callc/releases"
+
+def update_from_github():
+    try:
+        repo = git.Repo(".")
+        repo.remotes.origin.pull()
+        messagebox.showinfo("Обновление", "Приложение было успешно обновлено.")
+    except git.exc.GitCommandError as e:
+        messagebox.showerror("Ошибка обновления", str(e))
+
+def check_updates():
+    try:
+        response = requests.get(RELEASES_URL)
+        response.raise_for_status()
+        releases = response.json()
+        latest_version = releases[0]["tag_name"]
+        current_version = __version__
+
+        if current_version < latest_version:
+            if messagebox.askyesno("Доступно обновление", "Доступно новое обновление. Хотите установить его?"):
+                update_from_github()
+    except requests.exceptions.RequestException as e:
+        messagebox.showwarning("Ошибка проверки обновлений", str(e))
 
 def calculate_area(round_values):
     total_area = 0
@@ -55,6 +86,9 @@ def calculate_area(round_values):
         except ValueError:
             return False
 
+    def open_github_link():
+        webbrowser.open(REPO_URL)
+
     root = tk.CTk()
     root.title("Калькулятор площади помещений")
 
@@ -105,11 +139,7 @@ def calculate_area(round_values):
     copy_button = tk.CTkButton(root, text="Копировать", font=("Arial", 14), command=copy_click)
     copy_button.pack()
 
-    def open_github_link():
-        import webbrowser
-        webbrowser.open("https://github.com/Eternal1of/")
-
-    github_link_button = tk.CTkButton(root, text="Сделано QweRez(Eternal V", font=("Arial", 12), command=open_github_link)
+    github_link_button = tk.CTkButton(root, text="Сделано QweRez(Eternal V)", font=("Arial", 12), command=open_github_link)
     github_link_button.pack(side=tk.BOTTOM)
 
     window_calculator_button = tk.CTkButton(root, text="Калькулятор окон", font=("Arial", 14))
@@ -120,7 +150,17 @@ def calculate_area(round_values):
 
     window_calculator_button.bind("<Button-1>", open_window_calculator)
 
+    # Проверка обновлений при каждом запуске
+    check_updates()
+
     root.mainloop()
 
 if __name__ == "__main__":
     calculate_area(round_values=True)
+
+
+
+# pyinstaller -F --noconfirm --onedir --noconsole --add-data "C:\Users\kiril\AppData\Local\Programs\Python\Python311\Lib\site-packages\customtkinter;customtkinter/" "C:\мусорка\bot\siti\visual_area_calculator.py"
+# pyinstaller --noconfirm --onefile --noconsole --add-binary "C:\Users\kiril\AppData\Local\Programs\Python\Python311\Lib\site-packages\customtkinter;customtkinter/" "C:\мусорка\bot\siti\visual_area_calculator.py"
+# pyinstaller --noconfirm --onefile --noconsole --add-binary "C:\Users\kiril\AppData\Local\Programs\Python\Python311\Lib\site-packages\customtkinter;customtkinter/" "C:\мусорка\bot\siti\visual_area_calculator.py"
+
