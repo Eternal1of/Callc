@@ -1,49 +1,45 @@
-# TODO: Я затрахался если честно @flaymerr (интересно, пинги работают?)
 import customtkinter as tk
-import webbrowser
+from tkinter import messagebox
 
 def calculate_area(round_values):
     total_area = 0
     room_areas = []
 
-    def calculate_button_click():
+    def calculate_click():
         nonlocal total_area, room_areas
 
         try:
-            room_length = float(room_length_entry.get())
-            room_length_minus = float(room_length_minus_entry.get())
-            room_height = float(room_height_entry.get())
-            num_doors = int(num_doors_entry.get())
+            length = float(length_entry.get())
+            length_minus = float(length_minus_entry.get())
+            height = float(height_entry.get())
+            num_doors = int(doors_entry.get())
 
-            room_area = (room_length - room_length_minus) * room_height
+            area = (length - length_minus) * height
             door_area = num_doors
-            room_area -= door_area
+            area -= door_area
 
             if round_values:
-                room_area = round(room_area, 2)
+                area = round(area, 2)
 
-            total_area = room_area
-            room_areas.append(room_area)
+            total_area = area
+            room_areas.append(area)
 
             total_area_label.configure(text="Общая площадь: {:.2f}".format(total_area))
 
         except ValueError:
-            tk.showerror("Ошибка", "Неверный формат ввода. Пожалуйста, введите числовое значение.")
+            messagebox.showerror("Ошибка", "Неверный формат ввода. Пожалуйста, введите числовое значение.")
 
-    def reset_button_click():
+    def reset_click():
         nonlocal total_area, room_areas
         total_area = 0
         room_areas = []
         total_area_label.configure(text="Общая площадь:")
 
-    def copy_button_click():
+    def copy_click():
         result = total_area_label.cget("text")
         result = result.replace("Общая площадь: ", "")
         root.clipboard_clear()
         root.clipboard_append(result)
-
-    def open_link(event):
-        webbrowser.open("https://github.com/QweRezOn")
 
     def validate_float_input(entry_text):
         try:
@@ -62,73 +58,69 @@ def calculate_area(round_values):
     root = tk.CTk()
     root.title("Калькулятор площади помещений")
 
-    # Применение темной темы
     tk.set_appearance_mode("Dark")
     tk.set_default_color_theme("blue")
 
-    # Создание и размещение виджетов
     top_frame = tk.CTkFrame(root)
-    top_frame.pack(side=tk.TOP, pady=20)
+    top_frame.pack(pady=20)
 
-    room_length_label = tk.CTkLabel(top_frame, text="Длина помещения:", font=("Arial", 14))
-    room_length_label.grid(row=0, column=0, sticky="e")
+    length_label = tk.CTkLabel(top_frame, text="Длина помещения:", font=("Arial", 14))
+    length_label.pack(anchor="w")
 
-    room_length_entry = tk.CTkEntry(top_frame, font=("Arial", 14))
-    room_length_entry.grid(row=0, column=1)
+    length_entry = tk.CTkEntry(top_frame, font=("Arial", 14))
+    length_entry.pack(fill="x", padx=10)
 
-    room_length_minus_label = tk.CTkLabel(top_frame, text="Значение длины для вычета:", font=("Arial", 14))
-    room_length_minus_label.grid(row=1, column=0, sticky="e")
+    length_minus_label = tk.CTkLabel(top_frame, text="Значение длины для вычета:", font=("Arial", 14))
+    length_minus_label.pack(anchor="w")
 
-    room_length_minus_entry = tk.CTkEntry(top_frame, font=("Arial", 14))
-    room_length_minus_entry.insert(tk.END, "0")  # Установка значения по умолчанию
-    room_length_minus_entry.grid(row=1, column=1)
+    length_minus_entry = tk.CTkEntry(top_frame, font=("Arial", 14))
+    length_minus_entry.insert(tk.END, "0")
+    length_minus_entry.pack(fill="x", padx=10)
 
-    room_height_label = tk.CTkLabel(top_frame, text="Высота помещения:", font=("Arial", 14))
-    room_height_label.grid(row=2, column=0, sticky="e")
+    height_label = tk.CTkLabel(top_frame, text="Высота помещения:", font=("Arial", 14))
+    height_label.pack(anchor="w")
 
-    room_height_entry = tk.CTkEntry(top_frame, font=("Arial", 14))
-    room_height_entry.grid(row=2, column=1)
+    height_entry = tk.CTkEntry(top_frame, font=("Arial", 14))
+    height_entry.pack(fill="x", padx=10)
 
-    num_doors_label = tk.CTkLabel(top_frame, text="Количество дверей:", font=("Arial", 14))
-    num_doors_label.grid(row=3, column=0, sticky="e")
+    doors_label = tk.CTkLabel(top_frame, text="Количество дверей:", font=("Arial", 14))
+    doors_label.pack(anchor="w")
 
-    num_doors_entry = tk.CTkEntry(top_frame, font=("Arial", 14), validate="key")
-    num_doors_entry.configure(validatecommand=(root.register(validate_int_input), "%P"))
-    num_doors_entry.grid(row=3, column=1)
+    doors_entry = tk.CTkEntry(top_frame, font=("Arial", 14), validate="key")
+    doors_entry.configure(validatecommand=(root.register(validate_int_input), "%P"))
+    doors_entry.pack(fill="x", padx=10)
 
     buttons_frame = tk.CTkFrame(root)
     buttons_frame.pack(pady=20)
 
-    calculate_button = tk.CTkButton(buttons_frame, text="Рассчитать", font=("Arial", 14), command=calculate_button_click)
-    calculate_button.pack(side=tk.LEFT, padx=10)
+    calculate_button = tk.CTkButton(buttons_frame, text="Рассчитать", font=("Arial", 14), command=calculate_click)
+    calculate_button.pack(side=tk.LEFT, padx=(0, 10))
 
-    reset_button = tk.CTkButton(buttons_frame, text="Сбросить", font=("Arial", 14), command=reset_button_click)
-    reset_button.pack(side=tk.LEFT, padx=10)
+    reset_button = tk.CTkButton(buttons_frame, text="Сбросить", font=("Arial", 14), command=reset_click)
+    reset_button.pack(side=tk.LEFT)
 
     total_area_label = tk.CTkLabel(root, text="Общая площадь:", font=("Arial", 16, "bold"))
-    total_area_label.pack()
+    total_area_label.pack(pady=20)
 
-    copy_button = tk.CTkButton(root, text="Копировать", font=("Arial", 14), command=copy_button_click)
+    copy_button = tk.CTkButton(root, text="Копировать", font=("Arial", 14), command=copy_click)
     copy_button.pack()
 
-    footer_label = tk.CTkLabel(root, text="Сделано ", font=("Arial", 12))
-    footer_label.pack()
+    def open_github_link():
+        import webbrowser
+        webbrowser.open("https://github.com/Eternal1of/")
 
-    qwerez_link = tk.CTkLabel(root, text="QweRez", font=("Arial", 12, "underline"), cursor="hand2")
-    qwerez_link.pack()
-    qwerez_link.bind("<Button-1>", open_link)
+    github_link_button = tk.CTkButton(root, text="Сделано QweRez(Eternal V", font=("Arial", 12), command=open_github_link)
+    github_link_button.pack(side=tk.BOTTOM)
 
-    root.update()  # Обновление окна для получения актуальных размеров
+    window_calculator_button = tk.CTkButton(root, text="Калькулятор окон", font=("Arial", 14))
+    window_calculator_button.pack(anchor="e", pady=20)
 
-    # Позиционирование футера в центре нижней части окна
-    footer_frame = tk.CTkFrame(root)
-    footer_frame.pack(side=tk.BOTTOM, pady=(root.winfo_height() - 100, 20))  # Регулируйте отступы вторым значением
+    def open_window_calculator(event):
+        messagebox.showinfo("В разработке...", "Калькулятор окон находится в разработке.")
 
-    footer_label.pack(in_=footer_frame, side=tk.LEFT)
-    qwerez_link.pack(in_=footer_frame, side=tk.LEFT)
+    window_calculator_button.bind("<Button-1>", open_window_calculator)
 
     root.mainloop()
-
 
 if __name__ == "__main__":
     calculate_area(round_values=True)
